@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TestCaseSourceBuilderForAtcoder": {
+      "commandName": "Project",
+      "commandLineArgs": "https://atcoder.jp/contests/abs/tasks/abc086_a C:\\Users\\ShotaTsuji\\Downloads\\UnitTest1.cs"
+    }
+  }
+}
