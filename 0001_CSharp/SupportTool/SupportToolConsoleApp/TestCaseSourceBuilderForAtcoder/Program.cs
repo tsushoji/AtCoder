@@ -7,7 +7,7 @@ namespace TestCaseSourceBuilderForAtcoder
     internal class Program
     {
         private static Encoding _encoding = Encoding.GetEncoding("utf-8");
-        private static String _exeFolderPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+
         public static void Main(string[] args)
         {
             // AtCoaderの問題URLパラメータ
@@ -25,20 +25,36 @@ namespace TestCaseSourceBuilderForAtcoder
                 return;
             }
 
+            String exeFolderPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            var testCasesStrFilePath = exeFolderPath + @"\\Template\\UnitTest_001.cs";
+            var testCaseMethodStrFilePath = exeFolderPath + @"\\Template\\UnitTestMethod_001.cs";
+
+            if (!File.Exists(testCasesStrFilePath)) 
+            {
+                Console.WriteLine("テンプレートファイルがありません。テンプレートファイルパス:" + testCasesStrFilePath);
+                return;
+            }
+
+            if (!File.Exists(testCaseMethodStrFilePath))
+            {
+                Console.WriteLine("テンプレートファイルがありません。テンプレートファイルパス:" + testCaseMethodStrFilePath);
+                return;
+            }
+
             //テストコード出力
-            string testcases = GetTestCase(GetContext(targetURL.Trim(new char[] { '\r', '\n', ' ' })));
+            string testcases = GetTestCase(GetContext(targetURL.Trim(new char[] { '\r', '\n', ' ' })), testCasesStrFilePath, testCaseMethodStrFilePath);
             using (StreamWriter sw = new StreamWriter(outputPath, false, _encoding))
             {
                 sw.Write(testcases);
             }
 
-            Console.WriteLine("成功 出力テストコードパス:" + outputPath);
+            Console.WriteLine("成功。出力テストコードパス:" + outputPath);
         }
 
-        private static string GetTestCase(string html)
+        private static string GetTestCase(string html, String testCasesStrFilePath, String testCaseMethodStrFilePath)
         {
-            var testCasesStr = File.ReadAllText(_exeFolderPath + @"\\Template\\UnitTest_001.cs", _encoding);
-            var testCaseMethodStr = File.ReadAllText(_exeFolderPath + @"\\Template\\UnitTestMethod_001.cs", _encoding);
+            var testCasesStr = File.ReadAllText(testCasesStrFilePath, _encoding);
+            var testCaseMethodStr = File.ReadAllText(testCaseMethodStrFilePath, _encoding);
 
             string anchor = "(<pre class=\"prettyprint linenums\">|<pre>)(?<testcase>.*?)</pre>";
             Regex re = new Regex(anchor, RegexOptions.IgnoreCase | RegexOptions.Singleline);
